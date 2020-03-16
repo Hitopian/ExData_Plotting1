@@ -22,42 +22,50 @@ dfMaster <-
 
 
 ##################################
-# GRAPH 3
+# GRAPH 4
 # Numerical vs Date Time Bivariate 
 ##################################
 
-# Plot "Sub_metering" & Date Time
+# Panel of 4 graphs:
+# - Graph 2
+# - Graph 3
+# - New graph: Voltage vs. Date & Time
+# - New graph: Global_reactive_power vs. Date & Time
 
-# Variable:
-# Sub_metering_1: energy sub-metering No. 1 (in watt-hour of active energy). It corresponds to the kitchen, containing mainly a dishwasher, an oven and a microwave (hot plates are not electric but gas powered).
-# Sub_metering_2: energy sub-metering No. 2 (in watt-hour of active energy). It corresponds to the laundry room, containing a washing-machine, a tumble-drier, a refrigerator and a light.
-# Sub_metering_3: energy sub-metering No. 3 (in watt-hour of active energy). It corresponds to an electric water-heater and an air-conditioner.
-# Date + Time
-
-df3 <- 
+df4 <- 
   dfMaster %>%
-  mutate(date_time = as.POSIXct(paste(Date, Time))) %>%
-  select(Sub_metering_1, Sub_metering_2, Sub_metering_3, date_time) 
+  mutate(date_time = as.POSIXct(paste(Date, Time)))
  
-str(df3)
-summary(df3)
 
-# This time I didn't copy to the PNG file because the legenda labels were cut
-png(filename="plot3.png", width=480, height=480)
+png(filename="plot4.png", width=480, height=480)
 
-with(df3, {
+par(mfrow=c(2,2), mar=c(4,4,2,1))
+
+  
+with(df4, {
+  plot(date_time, Global_active_power
+       , type = "l"
+       , xlab = ""
+       , ylab = "Global Active Power")
+  plot(date_time, Voltage
+       , type = "l"
+       , xlab = "datetime")
   plot(date_time, Sub_metering_1
        , type = "l"
        , xlab = ""
        , ylab = "Energy sub metering")
   lines(date_time, Sub_metering_2 , type = "l", col = "red")
   lines(date_time, Sub_metering_3 , type = "l", col = "blue")
-})
-
-legend("topright"
-       , col=c("black", "red", "blue")
-       , lty=1
+  legend("topright"
+       , col= c("black", "red", "blue")
+       , lty= 1
+       , cex = 0.5
+       , bty = "n"
        , legend=names(df3[1:3]))
+  plot(date_time, Global_reactive_power
+       , type = "l"
+       , xlab = "datetime")
+})
 
 dev.off()
 
